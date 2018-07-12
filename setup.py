@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="renecovalidator_pkg",
+    name="renecovalidator",
     version="0.0.1",
     author="Natural Solutions",
     author_email="author@example.com",
