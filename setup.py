@@ -13,7 +13,10 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/pypa/sampleproject",
     packages=setuptools.find_packages(),
-    dependency_links=['git+https://github.com/Julian/jsonschema.git#egg=jsonschema-3.0.0'],
+    install_requires=[
+        'jsonschema>2.6.0'
+    ],
+    dependency_links=['git+https://github.com/Julian/jsonschema.git@master#egg=jsonschema-3.0.0'],
     classifiers=(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
