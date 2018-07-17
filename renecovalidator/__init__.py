@@ -1,6 +1,7 @@
 from copy import deepcopy
 from json import JSONEncoder
 import collections
+import re
 
 from jsonschema import validators, Draft6Validator, FormatChecker
 
@@ -31,14 +32,46 @@ class RenecoValidator:
             schema, format_checker=RenecoValidator.format_checker
         )
 
-        errors = []
-        for error in schema_validator.iter_errors(data):
-            errors.append({
-                'pathNames': list(collections.deque(error.path)),
-                'path': '.'.join(map(lambda pathName: pathName.__str__(), error.path)),
-                'validator_name': error.validator,
-                'validator_value': error.validator_value,
-                'value': error.instance
-            })
+        #return [ error for error in schema_validator.iter_errors(data) ]
+
+        def getProperty(error):
+            return error.message.split("'")[1] \
+                if error.validator in ['required', 'dependencies'] \
+                else error.schema_path[len(error.schema_path) - 2]
         
+        def getValue(error):
+            return error.instance \
+                if error.validator not in ['required', 'dependencies'] \
+                else None
+
+        def getDependency(error):
+            def getDependencyName():
+                schemaPath = error.schema_path
+                schemaPathCopy = deepcopy(schemaPath)
+                schemaPathCopy.reverse()
+
+                return schemaPath[len(schemaPath) - schemaPathCopy.index('dependencies')]
+
+            return re.search("\'(.*)\' .* \'(.*)\'", error.message).group(2) \
+                if error.validator == 'dependencies' \
+                else getDependencyName() \
+                    if 'dependencies' in error.schema_path \
+                    else None
+
+        # 'schema': list(collections.deque(error.schema)),
+        # 'schema_names': '.'.join(map(lambda schema_name: schema_name.__str__(), error.schema)),
+        # 'pathNames': list(collections.deque(error.path)),
+        # 'path': '.'.join(map(lambda pathName: pathName.__str__(), error.path)),
+
+        errors = [
+            {
+                'schemaPath': list(collections.deque(error.schema_path)),
+                'keyword': error.validator,
+                'keywordValue': error.validator_value,
+                'property': getProperty(error),
+                'value': getValue(error),
+                'dependency': getDependency(error),
+                'message': error.message
+            } for error in schema_validator.iter_errors(data)]
+
         return errors
