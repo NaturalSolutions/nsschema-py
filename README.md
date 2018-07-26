@@ -1,7 +1,13 @@
-# Reneco Validator
+# Ns Schema
 
-This is the Reneco Validator package
+This is the  Ns Schema package
 
 ## Install
 
-pip install git+https://github.com/NaturalSolutions/renecovalidator-py.git --process-dependency-links
+Deprecated ?
+pip install git+https://github.com/NaturalSolutions/nsschema-py.git --process-dependency-links
+
+pip install git+https://github.com/NaturalSolutions/nsschema-py.git
+
+Deps
+pip install git+https://github.com/Julian/jsonschema.git
