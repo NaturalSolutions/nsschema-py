@@ -1,4 +1,5 @@
-from renecovalidator import RenecoValidator
+import nsschema
+
 from copy import deepcopy
 
 schema = {
@@ -9,7 +10,8 @@ schema = {
             'type': 'object',
             'properties': {
                 'field_a': {
-                    'type': 'string'
+                    'type': 'string',
+                    'format' : 'starts_by_a'
                 },
                 'field_b': {
                     'type': 'string'
@@ -21,7 +23,8 @@ schema = {
                     "properties": {
                         "field_c": {
                             "type": "number",
-                            "exclusiveMinimum": 10
+                            "exclusiveMinimum": 10,
+                            "format"    : "even"
                         }
                     },
                     'dependencies': {
@@ -71,26 +74,20 @@ schema = {
 }
 
 
-def create_step_schema(global_schema, step):
-    if step is None:
-        return global_schema
-    else:
-        schema_step = global_schema.get('definitions', {}).get(step, {})
-        schema_step['definitions'] = global_schema.get('definitions', {})
-        schema_step['definitions'].pop(step)
-        return schema_step
+validator = nsschema.NsSchema()
+validator.add_format_checker('even', checker = lambda value : value % 2 == 0)
+validator.add_format_checker('starts_by_a', checker= lambda value : False if len(value) == 0 else value[0] == 'a')
 
-
-schema = create_step_schema(schema, 'step_1')
+schema = nsschema.build_schema_from_definition(schema, 'step_1')
 
 data = {
-    'field_a': '1',
+    'field_a': 'a1',
     'field_b': '1',
     'field_c': 11,
-    'field_x': 1
+    'field_x': '1'
 }
 
 
-errors = RenecoValidator.validate(schema, data)
+errors = validator.validate(schema, data)
 
 print(errors)
