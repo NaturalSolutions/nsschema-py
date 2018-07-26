@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="nsschema",
-    version="0.1.0",
+    version="1.0.0",
     author="Natural Solutions",
     author_email="author@example.com",
     description="NsSchema package",
@@ -13,10 +13,6 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/pypa/sampleproject",
     packages=setuptools.find_packages(),
-    #install_requires=[
-    #    'jsonschema>2.6.0'
-    #],
-    #dependency_links=['git+https://github.com/Julian/jsonschema.git@master#egg=jsonschema-3.0.0'],
     classifiers=(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
